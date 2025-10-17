@@ -4,29 +4,19 @@ import { postsQueryOptions } from "../utils/posts";
 
 export const Route = createFileRoute("/posts")({
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(postsQueryOptions());
+    return {
+      data: await context.queryClient.ensureQueryData(postsQueryOptions()),
+    };
   },
   head: () => ({
     meta: [{ title: "Posts" }],
   }),
   component: PostsComponent,
+  pendingComponent: () => <span>Loading... </span>,
 });
 
 function PostsComponent() {
-  const { isPending, isError, data, error } = useSuspenseQuery(
-    postsQueryOptions()
-  );
-
-  // HERE IS WHAT I WANT
-  // When running in spa mode, we need to use isPending so that we can create a skeleton while the data is loading
-  // but currently isPending is always false in spa/ssr mode
-  if (isPending) {
-    return <span>Loading... (actually never display even in spa mode)</span>;
-  }
-
-  if (isError) {
-    return <span>Error: {error.message}</span>;
-  }
+  const { data } = Route.useLoaderData();
 
   return (
     <>

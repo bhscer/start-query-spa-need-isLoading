@@ -10,16 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RedirectRouteImport } from './routes/redirect'
+import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as DeferredRouteImport } from './routes/deferred'
 import { Route as PathlessLayoutRouteImport } from './routes/_pathlessLayout'
 import { Route as UsersRouteRouteImport } from './routes/users.route'
 import { Route as PostsRouteRouteImport } from './routes/posts.route'
+import { Route as AnypathRouteRouteImport } from './routes/anypath/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UsersIndexRouteImport } from './routes/users.index'
 import { Route as PostsIndexRouteImport } from './routes/posts.index'
 import { Route as UsersUserIdRouteImport } from './routes/users.$userId'
 import { Route as PostsPostIdRouteImport } from './routes/posts.$postId'
+import { Route as PathlessLoadingRouteImport } from './routes/pathless.loading'
 import { Route as ApiUsersRouteImport } from './routes/api/users'
+import { Route as AnypathLoadingRouteImport } from './routes/anypath/loading'
 import { Route as PathlessLayoutNestedLayoutRouteImport } from './routes/_pathlessLayout/_nested-layout'
 import { Route as PostsPostIdDeepRouteImport } from './routes/posts_.$postId.deep'
 import { Route as ApiUsersIdRouteImport } from './routes/api/users.$id'
@@ -29,6 +33,11 @@ import { Route as PathlessLayoutNestedLayoutRouteARouteImport } from './routes/_
 const RedirectRoute = RedirectRouteImport.update({
   id: '/redirect',
   path: '/redirect',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoadingRoute = LoadingRouteImport.update({
+  id: '/loading',
+  path: '/loading',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeferredRoute = DeferredRouteImport.update({
@@ -48,6 +57,11 @@ const UsersRouteRoute = UsersRouteRouteImport.update({
 const PostsRouteRoute = PostsRouteRouteImport.update({
   id: '/posts',
   path: '/posts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnypathRouteRoute = AnypathRouteRouteImport.update({
+  id: '/anypath',
+  path: '/anypath',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -75,10 +89,20 @@ const PostsPostIdRoute = PostsPostIdRouteImport.update({
   path: '/$postId',
   getParentRoute: () => PostsRouteRoute,
 } as any)
+const PathlessLoadingRoute = PathlessLoadingRouteImport.update({
+  id: '/pathless/loading',
+  path: '/pathless/loading',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiUsersRoute = ApiUsersRouteImport.update({
   id: '/api/users',
   path: '/api/users',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AnypathLoadingRoute = AnypathLoadingRouteImport.update({
+  id: '/loading',
+  path: '/loading',
+  getParentRoute: () => AnypathRouteRoute,
 } as any)
 const PathlessLayoutNestedLayoutRoute =
   PathlessLayoutNestedLayoutRouteImport.update({
@@ -110,11 +134,15 @@ const PathlessLayoutNestedLayoutRouteARoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/anypath': typeof AnypathRouteRouteWithChildren
   '/posts': typeof PostsRouteRouteWithChildren
   '/users': typeof UsersRouteRouteWithChildren
   '/deferred': typeof DeferredRoute
+  '/loading': typeof LoadingRoute
   '/redirect': typeof RedirectRoute
+  '/anypath/loading': typeof AnypathLoadingRoute
   '/api/users': typeof ApiUsersRouteWithChildren
+  '/pathless/loading': typeof PathlessLoadingRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/posts/': typeof PostsIndexRoute
@@ -126,9 +154,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/anypath': typeof AnypathRouteRouteWithChildren
   '/deferred': typeof DeferredRoute
+  '/loading': typeof LoadingRoute
   '/redirect': typeof RedirectRoute
+  '/anypath/loading': typeof AnypathLoadingRoute
   '/api/users': typeof ApiUsersRouteWithChildren
+  '/pathless/loading': typeof PathlessLoadingRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/posts': typeof PostsIndexRoute
@@ -141,13 +173,17 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/anypath': typeof AnypathRouteRouteWithChildren
   '/posts': typeof PostsRouteRouteWithChildren
   '/users': typeof UsersRouteRouteWithChildren
   '/_pathlessLayout': typeof PathlessLayoutRouteWithChildren
   '/deferred': typeof DeferredRoute
+  '/loading': typeof LoadingRoute
   '/redirect': typeof RedirectRoute
   '/_pathlessLayout/_nested-layout': typeof PathlessLayoutNestedLayoutRouteWithChildren
+  '/anypath/loading': typeof AnypathLoadingRoute
   '/api/users': typeof ApiUsersRouteWithChildren
+  '/pathless/loading': typeof PathlessLoadingRoute
   '/posts/$postId': typeof PostsPostIdRoute
   '/users/$userId': typeof UsersUserIdRoute
   '/posts/': typeof PostsIndexRoute
@@ -161,11 +197,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/anypath'
     | '/posts'
     | '/users'
     | '/deferred'
+    | '/loading'
     | '/redirect'
+    | '/anypath/loading'
     | '/api/users'
+    | '/pathless/loading'
     | '/posts/$postId'
     | '/users/$userId'
     | '/posts/'
@@ -177,9 +217,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/anypath'
     | '/deferred'
+    | '/loading'
     | '/redirect'
+    | '/anypath/loading'
     | '/api/users'
+    | '/pathless/loading'
     | '/posts/$postId'
     | '/users/$userId'
     | '/posts'
@@ -191,13 +235,17 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/anypath'
     | '/posts'
     | '/users'
     | '/_pathlessLayout'
     | '/deferred'
+    | '/loading'
     | '/redirect'
     | '/_pathlessLayout/_nested-layout'
+    | '/anypath/loading'
     | '/api/users'
+    | '/pathless/loading'
     | '/posts/$postId'
     | '/users/$userId'
     | '/posts/'
@@ -210,12 +258,15 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnypathRouteRoute: typeof AnypathRouteRouteWithChildren
   PostsRouteRoute: typeof PostsRouteRouteWithChildren
   UsersRouteRoute: typeof UsersRouteRouteWithChildren
   PathlessLayoutRoute: typeof PathlessLayoutRouteWithChildren
   DeferredRoute: typeof DeferredRoute
+  LoadingRoute: typeof LoadingRoute
   RedirectRoute: typeof RedirectRoute
   ApiUsersRoute: typeof ApiUsersRouteWithChildren
+  PathlessLoadingRoute: typeof PathlessLoadingRoute
   PostsPostIdDeepRoute: typeof PostsPostIdDeepRoute
 }
 
@@ -226,6 +277,13 @@ declare module '@tanstack/react-router' {
       path: '/redirect'
       fullPath: '/redirect'
       preLoaderRoute: typeof RedirectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/loading': {
+      id: '/loading'
+      path: '/loading'
+      fullPath: '/loading'
+      preLoaderRoute: typeof LoadingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/deferred': {
@@ -254,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/posts'
       fullPath: '/posts'
       preLoaderRoute: typeof PostsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/anypath': {
+      id: '/anypath'
+      path: '/anypath'
+      fullPath: '/anypath'
+      preLoaderRoute: typeof AnypathRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -291,12 +356,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsPostIdRouteImport
       parentRoute: typeof PostsRouteRoute
     }
+    '/pathless/loading': {
+      id: '/pathless/loading'
+      path: '/pathless/loading'
+      fullPath: '/pathless/loading'
+      preLoaderRoute: typeof PathlessLoadingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/users': {
       id: '/api/users'
       path: '/api/users'
       fullPath: '/api/users'
       preLoaderRoute: typeof ApiUsersRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/anypath/loading': {
+      id: '/anypath/loading'
+      path: '/loading'
+      fullPath: '/anypath/loading'
+      preLoaderRoute: typeof AnypathLoadingRouteImport
+      parentRoute: typeof AnypathRouteRoute
     }
     '/_pathlessLayout/_nested-layout': {
       id: '/_pathlessLayout/_nested-layout'
@@ -335,6 +414,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AnypathRouteRouteChildren {
+  AnypathLoadingRoute: typeof AnypathLoadingRoute
+}
+
+const AnypathRouteRouteChildren: AnypathRouteRouteChildren = {
+  AnypathLoadingRoute: AnypathLoadingRoute,
+}
+
+const AnypathRouteRouteWithChildren = AnypathRouteRoute._addFileChildren(
+  AnypathRouteRouteChildren,
+)
 
 interface PostsRouteRouteChildren {
   PostsPostIdRoute: typeof PostsPostIdRoute
@@ -408,12 +499,15 @@ const ApiUsersRouteWithChildren = ApiUsersRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnypathRouteRoute: AnypathRouteRouteWithChildren,
   PostsRouteRoute: PostsRouteRouteWithChildren,
   UsersRouteRoute: UsersRouteRouteWithChildren,
   PathlessLayoutRoute: PathlessLayoutRouteWithChildren,
   DeferredRoute: DeferredRoute,
+  LoadingRoute: LoadingRoute,
   RedirectRoute: RedirectRoute,
   ApiUsersRoute: ApiUsersRouteWithChildren,
+  PathlessLoadingRoute: PathlessLoadingRoute,
   PostsPostIdDeepRoute: PostsPostIdDeepRoute,
 }
 export const routeTree = rootRouteImport
